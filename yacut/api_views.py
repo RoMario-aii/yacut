@@ -7,12 +7,13 @@ from . import app, db
 from .error_handlers import InvalidAPIUsage
 from .models import URLMap
 from .views import get_unique_short_id
+from .constants import SHORT_LENGTH, FORM_VALIDATORS, SERVER_URL
 
 
 @app.route('/api/id/', methods=['POST'])
 def get_short_url():
     if not request.data:
-        raise InvalidAPIUsage("Отсутствует тело запроса")
+        raise InvalidAPIUsage('Отсутствует тело запроса')
 
     data = request.get_json()
 
@@ -24,8 +25,8 @@ def get_short_url():
         data['custom_id'] = get_unique_short_id()
     else:
         short_link = data['custom_id']
-        if len(short_link) > 16 or (
-            re.match('^[a-zA-Z0-9]+$', short_link) is None
+        if len(short_link) > SHORT_LENGTH or (
+            re.match(FORM_VALIDATORS, short_link) is None
         ):
             raise InvalidAPIUsage(
                 'Указано недопустимое имя для короткой ссылки'
@@ -42,7 +43,7 @@ def get_short_url():
 
     return jsonify({
         'url': url_in_db.to_dict()['original'],
-        'short_link': 'http://localhost/' + url_in_db.to_dict()['short']
+        'short_link': SERVER_URL + url_in_db.to_dict()['short']
     }), HTTPStatus.CREATED
 
 
@@ -54,4 +55,4 @@ def get_opinion(short_id):
         raise InvalidAPIUsage('Указанный id не найден', HTTPStatus.NOT_FOUND)
     return jsonify({
         'url': url_in_db.to_dict()['original'],
-    }), 200
+    }), HTTPStatus.OK

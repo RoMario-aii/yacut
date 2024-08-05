@@ -1,13 +1,8 @@
-import string
-from random import choice
+import random
 
-from settings import UNIQUE_ID_LENGTH
-
-from .models import URLMap
+from .constants import SYMBOLS_CHOICE
 
 
-def get_unique_short_id(chars=string.ascii_letters + string.digits):
-    short_id = ''.join([choice(chars) for i in range(UNIQUE_ID_LENGTH)])
-    if URLMap.query.filter_by(short=short_id).first():
-        short_id = get_unique_short_id()
-    return short_id
+def get_unique_short_id():
+    short = random.choices(SYMBOLS_CHOICE, k=6)
+    return ''.join(short)
