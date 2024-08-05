@@ -38,7 +38,3 @@ pip install -r requirements.txt
 
 
 Инициализация БД и создание миграций:
-
-flask db init
-flask db migrate
-flask db upgrade
